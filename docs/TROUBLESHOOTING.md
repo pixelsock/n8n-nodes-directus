@@ -4,6 +4,7 @@ Common issues and solutions for n8n-nodes-directus.
 
 ## Table of Contents
 
+- [Installation Issues](#installation-issues)
 - [Connection Issues](#connection-issues)
 - [Authentication Errors](#authentication-errors)
 - [Flow Operations](#flow-operations)
@@ -13,6 +14,76 @@ Common issues and solutions for n8n-nodes-directus.
 - [AI Agent Tools](#ai-agent-tools)
 - [Performance Issues](#performance-issues)
 - [Error Messages](#error-messages)
+
+---
+
+## Installation Issues
+
+### "Package is not vetted for installation"
+
+**Symptoms**:
+- Error appears when trying to install via **Settings** → **Community Nodes**
+- Installation blocked with vetting warning
+
+**Cause**: You're installing by typing a package name into Settings → Community Nodes. The verified-node check only runs when installing via the node palette search.
+
+**Solution**: Install through the node palette instead:
+
+1. Click the **+** button to open the node palette
+2. Search for **Directus**
+3. Click the result with the verification badge (shield icon) and click **Install**
+
+### "The specified package could not be loaded" / "Class could not be found"
+
+**Symptoms**:
+- Node fails to load after install or upgrade
+- Errors reference a missing class or unloadable package
+- Node disappears from the palette after an n8n update
+
+**Cause**: Stale files remain in n8n's community nodes directory. This is a known n8n platform issue, not specific to this node.
+
+**Solution — Docker deployments**:
+```bash
+docker exec -it <container-name> sh -c "cd /home/node/.n8n/nodes && rm -rf package.json node_modules"
+docker restart <container-name>
+```
+
+**Solution — Standard installations**:
+1. Stop n8n
+2. Delete the community nodes directory: `rm -rf ~/.n8n/nodes`
+3. Start n8n
+4. Reinstall the Directus node **via the node palette** (search for "Directus" and click the verified result)
+
+> **Important**: After clearing the directory, always reinstall through the palette search, not Settings → Community Nodes.
+
+### Docker: Nodes Disappear After Restart
+
+**Symptoms**:
+- Installed Directus node vanishes after the container restarts
+- Have to reinstall on every deploy
+
+**Cause**: The `~/.n8n/nodes` directory isn't mounted to a persistent volume.
+
+**Solution**: Ensure your `docker-compose.yml` (or equivalent) persists the n8n data directory:
+
+```yaml
+volumes:
+  - n8n_data:/home/node/.n8n
+```
+
+### Node Doesn't Appear When Searching
+
+**Symptoms**:
+- Searching "Directus" in the node palette returns no results
+- Self-hosted n8n instance
+
+**Cause**: Community packages are disabled.
+
+**Solution**: Enable community packages:
+
+1. Set `N8N_COMMUNITY_PACKAGES_ENABLED=true` in your n8n environment variables
+2. Restart n8n
+3. Search for "Directus" in the node palette again
 
 ---
 

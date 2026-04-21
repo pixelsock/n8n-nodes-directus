@@ -35,14 +35,32 @@ Community node for integrating n8n with Directus CMS, now with full AI agent sup
 
 ## Installation
 
-### Via n8n GUI (Recommended)
+### Via Node Palette (Recommended)
 
-1. Go to **Settings** → **Community Nodes**
-2. Select **Install a community node**
-3. Type `n8n-nodes-directus` and click **Install**
-4. Restart n8n if prompted
+1. In n8n, click the **+** button to open the node palette
+2. Search for **Directus**
+3. Click the verified Directus node (look for the verification badge / shield icon)
+4. Click **Install**
 
-### Via npm (Self-hosted)
+This is the recommended path because it installs the verified community node with the correct signature. Avoid installing by package name through **Settings → Community Nodes** — that path can produce a "Package is not vetted for installation" error.
+
+### Self-Hosted n8n: Enable Community Nodes
+
+If the Directus node doesn't appear when you search the palette, enable community packages:
+
+1. Set `N8N_COMMUNITY_PACKAGES_ENABLED=true` in your n8n environment variables
+2. Restart your n8n instance
+
+### Docker: Persist the Nodes Directory
+
+If your installed community nodes disappear after container restarts, ensure `~/.n8n/nodes` is in a persistent volume:
+
+```yaml
+volumes:
+  - n8n_data:/home/node/.n8n
+```
+
+### Via npm (Advanced)
 
 ```bash
 cd ~/.n8n/nodes
@@ -97,15 +115,20 @@ Status: active
 ### Creating a Directus API Token
 
 1. Log into your Directus admin panel
-2. Go to **Settings** → **Access Tokens**
-3. Click **Create New Token**
-4. Set permissions as needed
-5. Copy the token (you won't see it again!)
-6. Use this token in your n8n credentials
+2. Go to **Users** and select (or create) the user your workflow will authenticate as
+3. Open the user's detail page and scroll to the **Token** section
+4. Click **Generate Token**
+5. Copy the token
+6. **Click the checkmark (✓) to save the user** — the token is not stored until you save
+7. Paste the token into your n8n credentials
 
-### Recommended Permissions
+### Choosing the Right Role
 
-For AI agents and automation:
+**Admin Token (Recommended for getting started)** — Assign the Administrator role for full access. Many operations (including webhook creation for triggers) require admin permissions.
+
+**Custom Role (Recommended for production)** — Create a role with only the permissions your workflows need. The token inherits the user's role, so you can restrict access while keeping workflows functional.
+
+Suggested permissions for AI agents and automation:
 - **directus_users**: Create, Read, Update
 - **directus_roles**: Read
 - **directus_flows**: Read, Execute
