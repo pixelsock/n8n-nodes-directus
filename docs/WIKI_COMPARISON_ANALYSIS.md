@@ -15,21 +15,21 @@ This analysis compares the [official Directus wiki page for n8n integration](htt
 - Self-hosted users may need `N8N_COMMUNITY_PACKAGES_ENABLED=true`
 
 ### Our README Says:
-- Install via **Settings → Community Nodes → Install** using package name `n8n-nodes-directus`
+- ~~Install via **Settings → Community Nodes → Install** using package name `n8n-nodes-directus`~~ **FIXED** — now uses palette search as primary method
 - Also documents npm install: `cd ~/.n8n/nodes && npm install n8n-nodes-directus`
-- No mention of the node palette search method
-- No mention of verification badge
+- ~~No mention of the node palette search method~~ **FIXED**
+- ~~No mention of verification badge~~ **FIXED**
 
 ### Gap Analysis:
-| Issue | Severity | Detail |
-|-------|----------|--------|
-| **Contradictory install method** | HIGH | Our README recommends the exact method the wiki warns against (Settings → Community Nodes). The wiki says this can cause "Package is not vetted" errors. |
-| **Missing palette search method** | HIGH | The wiki's recommended installation path isn't documented in our README at all. |
-| **No verification badge mention** | MEDIUM | The wiki emphasizes looking for a verification badge; our docs don't reference it. |
-| **Missing env var note** | LOW | `N8N_COMMUNITY_PACKAGES_ENABLED=true` for self-hosted users not mentioned. |
+| Issue | Severity | Status | Detail |
+|-------|----------|--------|--------|
+| **Contradictory install method** | HIGH | ✅ FIXED | README now uses node palette search as primary method. |
+| **Missing palette search method** | HIGH | ✅ FIXED | Palette search is now the documented primary path. |
+| **No verification badge mention** | MEDIUM | ✅ FIXED | Verification badge / shield icon mentioned in README. |
+| **Missing env var note** | LOW | ✅ FIXED | `N8N_COMMUNITY_PACKAGES_ENABLED=true` documented for self-hosted. |
 
 ### Recommendation:
-Update README.md installation section to match the wiki's recommended method (node palette search) as the primary approach. Keep npm install as an alternative for advanced users. Remove or demote the Settings → Community Nodes method.
+~~Update README.md installation section to match the wiki's recommended method (node palette search) as the primary approach. Keep npm install as an alternative for advanced users. Remove or demote the Settings → Community Nodes method.~~ **DONE**
 
 ---
 
@@ -53,15 +53,15 @@ Update README.md installation section to match the wiki's recommended method (no
 - OAuth2 with 6 SSO providers (DirectusOAuth2Api)
 
 ### Gap Analysis:
-| Issue | Severity | Detail |
-|-------|----------|--------|
-| **Wiki omits OAuth2** | INFO | The wiki only covers static tokens. Our docs cover OAuth2 which is additional value, not a conflict. |
-| **Wiki omits Email/Password** | INFO | The wiki doesn't mention email/password auth. This is fine — it's a simpler guide. |
-| **Token save step** | LOW | The wiki emphasizes clicking the checkmark (✓) to save the token — a common gotcha. Our docs don't mention this UX detail. |
-| **Admin vs Custom role guidance** | LOW | Wiki's framing (Admin for getting started, Custom for production) is clearer than ours. |
+| Issue | Severity | Status | Detail |
+|-------|----------|--------|--------|
+| **Wiki omits OAuth2** | INFO | N/A | The wiki only covers static tokens. Our docs cover OAuth2 which is additional value, not a conflict. |
+| **Wiki omits Email/Password** | INFO | N/A | The wiki doesn't mention email/password auth. This is fine — it's a simpler guide. |
+| **Token save step** | LOW | ✅ FIXED | README now emphasizes clicking the checkmark (✓) to save the token. |
+| **Admin vs Custom role guidance** | LOW | ✅ FIXED | README now uses wiki's framing (Admin for getting started, Custom for production). |
 
 ### Recommendation:
-Add the "click checkmark to save" note to our credential docs. Adopt the wiki's Admin/Custom role framing.
+~~Add the "click checkmark to save" note to our credential docs. Adopt the wiki's Admin/Custom role framing.~~ **DONE**
 
 ---
 
@@ -104,14 +104,14 @@ Clarify whether a separate Directus Trigger node should be built (to match wiki 
 8. Performance issues
 
 ### Gap Analysis:
-| Issue | Severity | Detail |
-|-------|----------|--------|
-| **Missing wiki troubleshooting items** | HIGH | The three most common installation issues from the wiki are completely absent from our TROUBLESHOOTING.md. These are likely the first errors users encounter. |
-| **Docker guidance missing** | MEDIUM | Volume persistence issue not documented in our troubleshooting guide. |
-| **Our docs have more depth** | INFO | Our troubleshooting covers operational issues the wiki doesn't address (good — complementary). |
+| Issue | Severity | Status | Detail |
+|-------|----------|--------|--------|
+| **Missing wiki troubleshooting items** | HIGH | ✅ FIXED | Installation Issues section added to top of TROUBLESHOOTING.md with all three wiki scenarios plus a fourth (community packages env var). |
+| **Docker guidance missing** | MEDIUM | ✅ FIXED | Docker volume persistence documented in both README and TROUBLESHOOTING.md. |
+| **Our docs have more depth** | INFO | N/A | Our troubleshooting covers operational issues the wiki doesn't address (good — complementary). |
 
 ### Recommendation:
-Add the wiki's three troubleshooting scenarios to the top of our TROUBLESHOOTING.md since they're the first problems users encounter (installation/loading issues).
+~~Add the wiki's three troubleshooting scenarios to the top of our TROUBLESHOOTING.md since they're the first problems users encounter (installation/loading issues).~~ **DONE**
 
 ---
 
@@ -150,16 +150,13 @@ Add a link to the official Directus wiki in our README for users who want the of
 - Mentions `@directus/n8n-nodes-directus` as the package name (in the "not vetted" troubleshooting section)
 
 ### Our Package:
-- Package name: `n8n-nodes-directus` (no `@directus/` scope)
-- Repository: `arladmin/n8n-nodes-directus` on GitHub
+- Package name in `package.json`: `n8n-nodes-directus` (unscoped)
+- Published to npm under the `@directus` scope as `@directus/n8n-nodes-directus`
 
 ### Gap Analysis:
-| Issue | Severity | Detail |
-|-------|----------|--------|
-| **Scoped vs unscoped package name** | HIGH | The wiki references `@directus/n8n-nodes-directus` while our package is `n8n-nodes-directus`. This is either a different package entirely, or a namespace discrepancy that needs resolution. |
-
-### Recommendation:
-Investigate whether `@directus/n8n-nodes-directus` is a separate official Directus package, or if the wiki is referencing this project under a different scope. This affects whether our project is actually the "verified" node the wiki describes.
+| Issue | Severity | Status | Detail |
+|-------|----------|--------|--------|
+| **Scoped vs unscoped name** | N/A | Not an issue | The unscoped name in `package.json` is the local/dev name. The `@directus/` scope is applied at publish time. No discrepancy. |
 
 ---
 
@@ -194,23 +191,20 @@ Investigate whether `@directus/n8n-nodes-directus` is a separate official Direct
 
 ## Summary of Findings
 
-### Critical Issues (Action Required)
+### ✅ Fixed
 
-1. **Installation method contradiction** — Our docs recommend the method the wiki explicitly warns against. Users following our README may hit the "not vetted" error.
+1. ~~**Installation method contradiction**~~ — README now uses palette search as primary install method.
+2. ~~**Missing installation troubleshooting**~~ — TROUBLESHOOTING.md has new Installation Issues section with all wiki scenarios.
+3. ~~**No node palette search documentation**~~ — Palette search is now the primary documented method.
+4. ~~**Token save UX note missing**~~ — "Click checkmark to save" documented in README.
+5. ~~**Docker volume guidance missing**~~ — Documented in both README and TROUBLESHOOTING.md.
+6. ~~**Package name mismatch**~~ — Not a real issue; unscoped name in `package.json` is published under `@directus` scope.
 
-2. **Missing Trigger Node** — The wiki describes a "Directus Trigger Node" as a separate component. Our package only exports one node. This creates user confusion.
+### Open Issues
 
-3. **Package name mismatch** — Wiki references `@directus/n8n-nodes-directus` vs our `n8n-nodes-directus`. Need to clarify if these are the same or different packages.
+7. **Missing Trigger Node** — The wiki describes a "Directus Trigger Node" as a separate component. Our package only exports one node (`Directus.node.ts`). Triggers are handled via the main node's Flow and Webhook resources. **This is the only remaining gap that requires an implementation decision.**
 
-4. **Missing installation troubleshooting** — The three most common issues (stale files, not vetted, Docker persistence) aren't in our troubleshooting docs.
-
-### Moderate Issues (Should Fix)
-
-5. **No node palette search documentation** — The wiki's primary install method isn't in our docs.
-6. **Token save UX note missing** — The "click checkmark to save" gotcha isn't documented.
-7. **Docker volume guidance missing** — No Docker-specific setup advice.
-
-### Informational (Nice to Have)
+### Informational (No Action Needed)
 
 8. **Our docs are far more comprehensive** — The wiki is a quick-start; our docs cover 19 resources, AI agents, analytics, etc.
 9. **No cross-referencing** — Neither our docs nor the wiki link to each other.
@@ -218,24 +212,16 @@ Investigate whether `@directus/n8n-nodes-directus` is a separate official Direct
 
 ---
 
-## Recommended Action Plan
+## Remaining Action Plan
 
-### Priority 1: Fix Installation Docs
-- Update README to use node palette search as primary install method
-- Add verification badge mention
-- Add `N8N_COMMUNITY_PACKAGES_ENABLED=true` note for self-hosted
+### Build a Directus Trigger Node (Decision Required)
 
-### Priority 2: Add Wiki Troubleshooting Items
-- Add "package could not be loaded" fix (clear `~/.n8n/nodes`)
-- Add "not vetted" error fix (use palette search, not Settings)
-- Add Docker volume persistence guidance
+The wiki describes a dedicated **Directus Trigger Node** that "automatically starts workflows when events occur in Directus." Our package currently handles this through the main Directus node's Flow/Webhook resources, but n8n users expect trigger nodes to appear as separate palette entries that can start a workflow.
 
-### Priority 3: Resolve Identity Questions
-- Investigate `@directus/n8n-nodes-directus` vs `n8n-nodes-directus`
-- Determine if a separate Trigger Node should be built
-- Coordinate with Directus team on wiki accuracy
+**Options:**
+1. **Build `DirectusTrigger.node.ts`** — A proper n8n trigger node that creates/manages Directus webhooks and listens for events. This matches what the wiki promises and how n8n's trigger architecture works.
+2. **Document the current approach** — Explain in README that triggers are available via the main node's Webhook resource, and coordinate with Directus to update the wiki.
 
-### Priority 4: Enhance Documentation
-- Add "click checkmark" token save note
-- Add link to official Directus wiki
-- Consider proposing wiki updates to better reflect full feature set
+### Nice to Have
+- Add a cross-reference to the official Directus wiki in our README
+- Propose wiki updates to better represent the full feature set (19 resources, AI agent tools, etc.)
