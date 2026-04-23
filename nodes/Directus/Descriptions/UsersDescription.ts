@@ -20,7 +20,7 @@ export const usersOperations: INodeProperties[] = [
 				name: 'Accept User Invite',
 				value: 'acceptUserInvite',
 				description: 'Accepts and enables an invited user using a JWT invitation token',
-				action: 'Accept User Invite a users',
+				action: 'Accept user invite a users',
 			},
 			{
 				name: 'Create',
@@ -32,7 +32,7 @@ export const usersOperations: INodeProperties[] = [
 				name: 'Create Multiple',
 				value: 'createMultiple',
 				description: 'Create Multiple Users',
-				action: 'Create Multiple a users',
+				action: 'Create multiple a users',
 			},
 			{
 				name: 'Delete',
@@ -44,7 +44,7 @@ export const usersOperations: INodeProperties[] = [
 				name: 'Delete Multiple',
 				value: 'deleteMultiple',
 				description: 'Delete Multiple Users',
-				action: 'Delete Multiple a users',
+				action: 'Delete multiple a users',
 			},
 			{
 				name: 'Disable 2FA',
@@ -74,19 +74,37 @@ export const usersOperations: INodeProperties[] = [
 				name: 'Get Current',
 				value: 'getCurrent',
 				description: 'Retrieve the currently authenticated user',
-				action: 'Get Current a users',
+				action: 'Get current a users',
+		},
+		{
+			name: 'Invite Multiple Users',
+			value: 'inviteMultiple',
+			description: 'Invite multiple users at once with custom email templates and options',
+			action: 'Invite multiple users a users',
 			},
 			{
 				name: 'Invite User',
 				value: 'inviteUser',
 				description: 'Invites one or more users to this project. It creates a user with an invited status, and then sends an email to the user with instructions on how to activate their account.',
-				action: 'Invite User a users',
+				action: 'Invite user a users',
 			},
 			{
 				name: 'List',
 				value: 'list',
 				description: 'List the users',
 				action: 'List a users',
+		},
+		{
+			name: 'List Invitations',
+			value: 'listInvitations',
+			description: 'List pending/accepted invitations with status filter',
+			action: 'List invitations a users',
+		},
+		{
+			name: 'Resend Invitation',
+			value: 'resendInvitation',
+			description: 'Resend invitation to a user',
+			action: 'Resend invitation a users',
 			},
 			{
 				name: 'Update',
@@ -98,13 +116,13 @@ export const usersOperations: INodeProperties[] = [
 				name: 'Update Me',
 				value: 'updateMe',
 				description: 'Update the currently authenticated user',
-				action: 'Update Me a users',
+				action: 'Update me a users',
 			},
 			{
 				name: 'Update Multiple',
 				value: 'updateMultiple',
 				description: 'Update Multiple Users',
-				action: 'Update Multiple a users',
+				action: 'Update multiple a users',
 			},
 		],
 		default: 'list',
@@ -128,7 +146,7 @@ export const usersFields: INodeProperties[] = [
 		},
 		placeholder: 'another@example.com',
 		default: '',
-		description: 'User email to invite.',
+		description: 'User email to invite',
 		required: true,
 	},
 	{
@@ -145,9 +163,9 @@ export const usersFields: INodeProperties[] = [
 				],
 			},
 		},
-		placeholder: 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7',
+		placeholder: 'Administrator',
 		default: '',
-		description: 'Role of the new user.',
+		description: 'Role of the new user. Can be either a role UUID (e.g., c86c2761-65d3-43c3-897f-6f74ad6a5bd7) or role name (e.g., Administrator). Common roles: Administrator, Public.',
 		required: true,
 	},
 	{
@@ -168,14 +186,50 @@ export const usersFields: INodeProperties[] = [
 		},
 		options: [
 			{
+				displayName: 'Email Subject',
+				name: 'emailSubject',
+				type: 'string',
+				placeholder: 'You have been invited to join',
+				default: '',
+				description: 'Custom email subject for the invitation',
+			},
+			{
+				displayName: 'Email Message',
+				name: 'emailMessage',
+				type: 'string',
+				typeOptions: {
+					rows: 4,
+				},
+				placeholder: 'Hi {{first_name}}, you have been invited to join our project. Click the link below to accept the invitation.',
+				default: '',
+				description: 'Custom email body/message for the invitation. Supports variable substitution: {{first_name}}, {{last_name}}, {{email}}, {{role}}',
+			},
+			{
+				displayName: 'Expiration Hours',
+				name: 'expirationHours',
+				type: 'number',
+				placeholder: '72',
+				default: '',
+				description: 'Invitation expiration time in hours',
+				typeOptions: {
+					minValue: 1,
+				},
+			},
+			{
 				displayName: 'Invite URL',
 				name: 'inviteUrl',
 				type: 'string',
 				placeholder: '',
 				default: '',
-				description: 'Provide a custom invite URL which the link in the email will lead to. The invite token will be passed as a parameter.
-Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment variable](https://docs.directus.io/reference/environment-variables/#security) to enable this feature.
-',
+				description: 'Provide a custom invite URL which the link in the email will lead to. The invite token will be passed as a parameter. Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment variable](https://docs.directus.io/reference/environment-variables/#security) to enable this feature.',
+			},
+			{
+				displayName: 'Redirect URL',
+				name: 'redirectUrl',
+				type: 'string',
+				placeholder: 'https://example.com/welcome',
+				default: '',
+				description: 'Custom redirect URL after invitation acceptance',
 			},
 		],
 	},
@@ -196,7 +250,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 		},
 		placeholder: 'd1r3ctu5',
 		default: '',
-		description: 'Password of the user.',
+		description: 'Password of the user',
 		required: true,
 	},
 	{
@@ -216,7 +270,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 		},
 		placeholder: 'eyJh...KmUk',
 		default: '',
-		description: 'Accept invite token.',
+		description: 'Accept invite token',
 		required: true,
 	},
 	{
@@ -236,7 +290,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 		},
 		placeholder: 'd1r3ctu5',
 		default: '',
-		description: 'The user\'s password of the currently authenticated user.',
+		description: 'The user\'s password of the currently authenticated user',
 		required: true,
 	},
 	{
@@ -256,7 +310,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 		},
 		placeholder: '123456',
 		default: '',
-		description: 'The TFA secret from tfa/generate.',
+		description: 'The TFA secret from tfa/generate',
 		required: true,
 	},
 	{
@@ -294,7 +348,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 		},
 		placeholder: '859014',
 		default: '',
-		description: 'One-time password generated by the authenticator app.',
+		description: 'One-time password generated by the authenticator app',
 		required: true,
 	},
 	{
@@ -318,7 +372,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 		},
 		placeholder: 'another@example.com',
 		default: '',
-		description: 'A partial [user object](https://docs.directus.io/reference/api/system/users/#the-user-object).',
+		description: 'A partial [user object](https://docs.directus.io/reference/api/system/users/#the-user-object)',
 		required: true,
 	},
 	{
@@ -343,7 +397,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 		},
 		placeholder: 'd1r3ctu5',
 		default: '',
-		description: 'A partial [user object](https://docs.directus.io/reference/api/system/users/#the-user-object).',
+		description: 'A partial [user object](https://docs.directus.io/reference/api/system/users/#the-user-object)',
 		required: true,
 	},
 	{
@@ -362,7 +416,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 		},
 		placeholder: '',
 		default: false,
-		description: 'If the query and/or body parameter should be set via the value-key pair UI or JSON/RAW.',
+		description: 'If the query and/or body parameter should be set via the value-key pair UI or JSON/RAW',
 		required: true,
 	},
 	{
@@ -425,7 +479,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 				type: 'string',
 				placeholder: '',
 				default: '',
-				description: 'Description of the user.',
+				description: 'Description of the user',
 			},
 			{
 				displayName: 'First Name',
@@ -433,7 +487,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 				type: 'string',
 				placeholder: 'Admin',
 				default: '',
-				description: 'First name of the user.',
+				description: 'First name of the user',
 			},
 			{
 				displayName: 'Language',
@@ -441,9 +495,7 @@ Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment vari
 				type: 'string',
 				placeholder: 'en-US',
 				default: '',
-				description: 'Language the Admin App is rendered in. See [our Crowdin page ](https://locales.directus.io/)
-[(opens new window)](https://locales.directus.io/)
-for all available languages and translations.',
+				description: 'Language the Admin App is rendered in. See [our Crowdin page ](https://locales.directus.io/) [(opens new window)](https://locales.directus.io/) for all available languages and translations.',
 			},
 			{
 				displayName: 'Last Name',
@@ -451,7 +503,7 @@ for all available languages and translations.',
 				type: 'string',
 				placeholder: 'User',
 				default: '',
-				description: 'Last name of the user.',
+				description: 'Last name of the user',
 			},
 			{
 				displayName: 'Location',
@@ -459,7 +511,7 @@ for all available languages and translations.',
 				type: 'string',
 				placeholder: 'New York City',
 				default: '',
-				description: 'Location of the user.',
+				description: 'Location of the user',
 			},
 			{
 				displayName: 'Role Name or ID',
@@ -467,7 +519,7 @@ for all available languages and translations.',
 				type: 'options',
 				placeholder: '',
 				default: '',
-				description: 'Role of the User.',
+				description: 'Role of the User. Can be a role UUID, role name, or choose from the list. The role name will be automatically resolved to its UUID. Common roles: Administrator, Public.',
 				typeOptions: {
 					loadOptionsMethod: 'getRoles',
 				},
@@ -478,7 +530,7 @@ for all available languages and translations.',
 				type: 'string',
 				placeholder: '',
 				default: '',
-				description: 'Tags for the user.',
+				description: 'Tags for the user',
 			},
 			{
 				displayName: 'TFA Secret',
@@ -487,7 +539,6 @@ for all available languages and translations.',
 				typeOptions: { password: true },
 				placeholder: '',
 				default: '',
-				required: false,
 			},
 			{
 				displayName: 'Theme',
@@ -495,7 +546,7 @@ for all available languages and translations.',
 				type: 'options',
 				placeholder: 'Select an option',
 				default: 'auto',
-				description: 'One of auto, light, dark.',
+				description: 'One of auto, light, dark',
 				options: [
 					{
 						name: 'Auto',
@@ -517,7 +568,7 @@ for all available languages and translations.',
 				type: 'string',
 				placeholder: 'CTO',
 				default: '',
-				description: 'Title of the user.',
+				description: 'Title of the user',
 			},
 		],
 	},
@@ -533,15 +584,101 @@ for all available languages and translations.',
 				resource: [
 					'users',
 				],
+				inputType: [
+					'json',
+				],
 			},
 		},
-		placeholder: '[\n	{\n		"email": "admin@example.com",\n		"password": "p455w0rd",\n		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"\n	},\n	{\n		"email": "another@example.com",\n		"password": "d1r3ctu5",\n		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"\n	}\n]',
+		placeholder: '[\n	{\n		"email": "admin@example.com",\n		"password": "p455w0rd",\n		"role": "Administrator"\n	},\n	{\n		"email": "another@example.com",\n		"password": "d1r3ctu5",\n		"role": "Administrator"\n	}\n]',
 		default: null,
-		description: 'An array of partial [user objects](https://docs.directus.io/reference/api/system/users/#the-user-object).',
+		description: 'An array of partial [user objects](https://docs.directus.io/reference/api/system/users/#the-user-object). Role can be UUID or role name (e.g., "Administrator").',
 		required: true,
 		typeOptions: {
 			alwaysOpenEditWindow: true,
 		},
+	},
+	{
+		displayName: 'Input Type',
+		name: 'inputType',
+		type: 'options',
+		displayOptions: {
+			show: {
+				operation: [
+					'createMultiple',
+				],
+				resource: [
+					'users',
+				],
+			},
+		},
+		options: [
+			{
+				name: 'JSON',
+				value: 'json',
+				description: 'Provide user data as JSON array',
+			},
+			{
+				name: 'CSV',
+				value: 'csv',
+				description: 'Provide user data as CSV',
+			},
+		],
+		default: 'json',
+		description: 'Input format for user data (JSON or CSV)',
+	},
+	{
+		displayName: 'Data (CSV)',
+		name: 'csvData',
+		type: 'string',
+		displayOptions: {
+			show: {
+				operation: [
+					'createMultiple',
+				],
+				resource: [
+					'users',
+				],
+				inputType: [
+					'csv',
+				],
+			},
+		},
+		placeholder: 'email,password,role,first_name,last_name\nadmin@example.com,p455w0rd,Administrator,John,Doe\nanother@example.com,d1r3ctu5,Administrator,Jane,Smith',
+		default: '',
+		description: 'CSV data with header row. First row must contain field names. Role can be UUID or role name (e.g., "Administrator").',
+		required: true,
+		typeOptions: {
+			rows: 10,
+		},
+	},
+	{
+		displayName: 'Error Handling',
+		name: 'errorHandling',
+		type: 'options',
+		displayOptions: {
+			show: {
+				operation: [
+					'createMultiple',
+				],
+				resource: [
+					'users',
+				],
+			},
+		},
+		options: [
+			{
+				name: 'Stop on First Error',
+				value: 'stop',
+				description: 'Stop processing when the first error occurs',
+			},
+			{
+				name: 'Continue on Error',
+				value: 'continue',
+				description: 'Continue processing remaining items even if errors occur',
+			},
+		],
+		default: 'stop',
+		description: 'How to handle errors during bulk creation',
 	},
 	{
 		displayName: 'ID',
@@ -559,7 +696,7 @@ for all available languages and translations.',
 		},
 		placeholder: '72a1ce24-4748-47de-a05f-ce9af3033727',
 		default: '',
-		description: 'Primary key of the user.',
+		description: 'Primary key of the user',
 		required: true,
 	},
 	{
@@ -582,7 +719,7 @@ for all available languages and translations.',
 			},
 		},
 		default: true,
-		description: 'If all results should be returned or only up to a given limit',
+		description: 'Whether to return all results or only up to a given limit',
 		required: true,
 	},
 	{
@@ -604,7 +741,7 @@ for all available languages and translations.',
 		},
 		placeholder: '',
 		default: 50,
-		description: 'A limit on the number of objects that are returned.',
+		description: 'Max number of results to return',
 		required: true,
 		typeOptions: {
 			minValue: 1,
@@ -644,7 +781,7 @@ for all available languages and translations.',
 		},
 		placeholder: '',
 		default: false,
-		description: 'If the query and/or body parameter should be set via the value-key pair UI or JSON/RAW.',
+		description: 'If the query and/or body parameter should be set via the value-key pair UI or JSON/RAW',
 		required: true,
 	},
 	{
@@ -699,7 +836,7 @@ for all available languages and translations.',
 				type: 'fixedCollection',
 				placeholder: 'Add Aggregation Functions',
 				default: {},
-				description: 'Aggregate functions allow you to perform calculations on a set of values, returning a single result.',
+				description: 'Aggregate functions allow you to perform calculations on a set of values, returning a single result',
 				typeOptions: {
 					multipleValues: true,
 				},
@@ -784,7 +921,7 @@ for all available languages and translations.',
 				type: 'json',
 				placeholder: '',
 				default: null,
-				description: 'Deep allows you to set any of the other query parameters on a nested relational dataset.',
+				description: 'Deep allows you to set any of the other query parameters on a nested relational dataset',
 				typeOptions: {
 					alwaysOpenEditWindow: true,
 				},
@@ -795,8 +932,7 @@ for all available languages and translations.',
 				type: 'options',
 				placeholder: 'Select an option',
 				default: 'csv',
-				description: 'Saves the API response to a file. Accepts one of JSON, csv, xml.
-',
+				description: 'Saves the API response to a file. Accepts one of JSON, csv, xml.',
 				options: [
 					{
 						name: 'CSV',
@@ -818,7 +954,7 @@ for all available languages and translations.',
 				type: 'string',
 				placeholder: '',
 				default: '',
-				description: 'Control what fields are being returned in the object.',
+				description: 'Control what fields are being returned in the object',
 			},
 			{
 				displayName: 'File Name for Export Data',
@@ -833,7 +969,7 @@ for all available languages and translations.',
 				type: 'json',
 				placeholder: '',
 				default: null,
-				description: 'Select items in collection by given conditions.',
+				description: 'Select items in collection by given conditions',
 				typeOptions: {
 					alwaysOpenEditWindow: true,
 				},
@@ -852,7 +988,7 @@ for all available languages and translations.',
 				type: 'string',
 				placeholder: '',
 				default: '',
-				description: 'What metadata to return in the response.',
+				description: 'What metadata to return in the response',
 			},
 			{
 				displayName: 'Offset',
@@ -860,7 +996,7 @@ for all available languages and translations.',
 				type: 'number',
 				placeholder: '',
 				default: null,
-				description: 'How many items to skip when fetching data.',
+				description: 'How many items to skip when fetching data',
 			},
 			{
 				displayName: 'Search',
@@ -868,7 +1004,7 @@ for all available languages and translations.',
 				type: 'string',
 				placeholder: '',
 				default: '',
-				description: 'Filter by items that contain the given search query in one of their fields.',
+				description: 'Filter by items that contain the given search query in one of their fields',
 			},
 			{
 				displayName: 'Sort',
@@ -896,7 +1032,7 @@ for all available languages and translations.',
 		},
 		placeholder: '72a1ce24-4748-47de-a05f-ce9af3033727',
 		default: '',
-		description: 'Primary key of the user.',
+		description: 'Primary key of the user',
 		required: true,
 	},
 	{
@@ -915,7 +1051,7 @@ for all available languages and translations.',
 		},
 		placeholder: '{\n	"title": "CTO"\n}',
 		default: null,
-		description: 'A partial [user object](https://docs.directus.io/reference/api/system/users/#the-user-object).',
+		description: 'A partial [user object](https://docs.directus.io/reference/api/system/users/#the-user-object)',
 		required: true,
 		typeOptions: {
 			alwaysOpenEditWindow: true,
@@ -937,13 +1073,40 @@ for all available languages and translations.',
 		},
 		placeholder: '{\n	"keys": ["72a1ce24-4748-47de-a05f-ce9af3033727", "9c3d75a8-7a5f-41a4-be0a-1488fd974511"],\n	"data": {\n		"title": "CTO"\n	}\n}',
 		default: null,
-		description: 'Required:
-- **`keys`** [Array of primary keys of the users you\'d like to update.]
-- **`data`** [Any of [the user object](https://docs.directus.io/reference/api/system/users/#the-user-object)\'s properties.]',
+		description: 'Required: - **`keys`** [Array of primary keys of the users you\'d like to update.] - **`data`** [Any of [the user object](https://docs.directus.io/reference/api/system/users/#the-user-object)\'s properties.]',
 		required: true,
 		typeOptions: {
 			alwaysOpenEditWindow: true,
 		},
+	},
+	{
+		displayName: 'Error Handling',
+		name: 'errorHandling',
+		type: 'options',
+		displayOptions: {
+			show: {
+				operation: [
+					'updateMultiple',
+				],
+				resource: [
+					'users',
+				],
+			},
+		},
+		options: [
+			{
+				name: 'Stop on First Error',
+				value: 'stop',
+				description: 'Stop processing when the first error occurs',
+			},
+			{
+				name: 'Continue on Error',
+				value: 'continue',
+				description: 'Continue processing remaining items even if errors occur',
+			},
+		],
+		default: 'stop',
+		description: 'How to handle errors during bulk update',
 	},
 	{
 		displayName: 'ID',
@@ -961,7 +1124,7 @@ for all available languages and translations.',
 		},
 		placeholder: '72a1ce24-4748-47de-a05f-ce9af3033727',
 		default: '',
-		description: 'Primary key of the user.',
+		description: 'Primary key of the user',
 		required: true,
 	},
 	{
@@ -987,6 +1150,35 @@ for all available languages and translations.',
 		},
 	},
 	{
+		displayName: 'Error Handling',
+		name: 'errorHandling',
+		type: 'options',
+		displayOptions: {
+			show: {
+				operation: [
+					'deleteMultiple',
+				],
+				resource: [
+					'users',
+				],
+			},
+		},
+		options: [
+			{
+				name: 'Stop on First Error',
+				value: 'stop',
+				description: 'Stop processing when the first error occurs',
+			},
+			{
+				name: 'Continue on Error',
+				value: 'continue',
+				description: 'Continue processing remaining items even if errors occur',
+			},
+		],
+		default: 'stop',
+		description: 'How to handle errors during bulk deletion',
+	},
+	{
 		displayName: 'Data (JSON)',
 		name: 'data',
 		type: 'json',
@@ -1002,11 +1194,300 @@ for all available languages and translations.',
 		},
 		placeholder: '{\n	"title": "CTO"\n}',
 		default: null,
-		description: 'Update the currently authenticated user.',
+		description: 'Update the currently authenticated user',
 		required: true,
 		typeOptions: {
 			alwaysOpenEditWindow: true,
 		},
+	},
+		{
+			displayName: 'Email Subject',
+			name: 'emailSubject',
+			type: 'string',
+			placeholder: 'You have been invited to join',
+			default: '',
+			description: 'Custom email subject for the invitation',
+		},
+		{
+			displayName: 'Email Message',
+			name: 'emailMessage',
+			type: 'string',
+			typeOptions: {
+				rows: 4,
+			},
+			placeholder: 'Hi {{first_name}}, you have been invited to join our project. Click the link below to accept the invitation.',
+			default: '',
+			description: 'Custom email body/message for the invitation. Supports variable substitution: {{first_name}}, {{last_name}}, {{email}}, {{role}}',
+		},
+		{
+			displayName: 'Expiration Hours',
+			name: 'expirationHours',
+			type: 'number',
+			placeholder: '72',
+			default: '',
+			description: 'Invitation expiration time in hours',
+			typeOptions: {
+				minValue: 1,
+			},
+		},
+		{
+			displayName: 'Invite URL',
+			name: 'inviteUrl',
+			type: 'string',
+			placeholder: '',
+			default: '',
+			description: 'Provide a custom invite URL which the link in the email will lead to. The invite token will be passed as a parameter. Note: You need to configure the [`USER_INVITE_URL_ALLOW_LIST` environment variable](https://docs.directus.io/reference/environment-variables/#security) to enable this feature.',
+		},
+		{
+			displayName: 'Redirect URL',
+			name: 'redirectUrl',
+			type: 'string',
+			placeholder: 'https://example.com/welcome',
+			default: '',
+			description: 'Custom redirect URL after invitation acceptance',
+		},
+	// listInvitations fields
+	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: [
+					'users',
+				],
+				operation: [
+					'listInvitations',
+				],
+			},
+		},
+		default: true,
+		description: 'Whether to return all results or only up to a given limit',
+		required: true,
+	},
+	{
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		displayOptions: {
+			show: {
+				operation: [
+					'listInvitations',
+				],
+				resource: [
+					'users',
+				],
+				returnAll: [
+					false,
+				],
+			},
+		},
+		placeholder: '',
+		default: 50,
+		description: 'Max number of results to return',
+		required: true,
+		typeOptions: {
+			minValue: 1,
+		},
+	},
+	{
+		displayName: 'Status Filter',
+		name: 'statusFilter',
+		type: 'options',
+		displayOptions: {
+			show: {
+				operation: [
+					'listInvitations',
+				],
+				resource: [
+					'users',
+				],
+			},
+		},
+		options: [
+			{
+				name: 'All',
+				value: 'all',
+				description: 'Return all invitations',
+			},
+			{
+				name: 'Pending',
+				value: 'pending',
+				description: 'Return pending invitations (invited status)',
+			},
+			{
+				name: 'Accepted',
+				value: 'accepted',
+				description: 'Return accepted invitations (active status)',
+			},
+		],
+		default: 'all',
+		description: 'Filter invitations by status',
+	},
+	// resendInvitation fields
+	{
+		displayName: 'User ID',
+		name: 'userId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				operation: [
+					'resendInvitation',
+				],
+				resource: [
+					'users',
+				],
+			},
+		},
+		placeholder: '72a1ce24-4748-47de-a05f-ce9af3033727',
+		default: '',
+		description: 'ID of the user to resend invitation to',
+		required: true,
+	},
+	// inviteMultiple fields
+	{
+		displayName: 'Input Type',
+		name: 'inputType',
+		type: 'options',
+		displayOptions: {
+			show: {
+				operation: [
+					'inviteMultiple',
+				],
+				resource: [
+					'users',
+				],
+			},
+		},
+		options: [
+			{
+				name: 'JSON',
+				value: 'json',
+				description: 'Provide emails and options as JSON array',
+			},
+			{
+				name: 'Comma-Separated',
+				value: 'csv',
+				description: 'Provide emails as comma-separated string',
+			},
+		],
+		default: 'json',
+		description: 'Format for providing email addresses',
+	},
+	{
+		displayName: 'Emails (JSON)',
+		name: 'emailsJson',
+		type: 'json',
+		displayOptions: {
+			show: {
+				operation: [
+					'inviteMultiple',
+				],
+				resource: [
+					'users',
+				],
+				inputType: [
+					'json',
+				],
+			},
+		},
+		placeholder: '[\n	{\n		"email": "user1@example.com",\n		"role": "Administrator"\n	},\n	{\n		"email": "user2@example.com",\n		"role": "Editor"\n	}\n]',
+		default: null,
+		description: 'Array of invitation objects with email and role. Role can be UUID or role name.',
+		required: true,
+		typeOptions: {
+			alwaysOpenEditWindow: true,
+		},
+	},
+	{
+		displayName: 'Emails (Comma-Separated)',
+		name: 'emailsCsv',
+		type: 'string',
+		displayOptions: {
+			show: {
+				operation: [
+					'inviteMultiple',
+				],
+				resource: [
+					'users',
+				],
+				inputType: [
+					'csv',
+				],
+			},
+		},
+		placeholder: 'user1@example.com, user2@example.com, user3@example.com',
+		default: '',
+		description: 'Comma-separated list of email addresses',
+		required: true,
+	},
+	{
+		displayName: 'Role',
+		name: 'role',
+		type: 'string',
+		displayOptions: {
+			show: {
+				operation: [
+					'inviteMultiple',
+				],
+				resource: [
+					'users',
+				],
+				inputType: [
+					'csv',
+				],
+			},
+		},
+		placeholder: 'Administrator',
+		default: '',
+		description: 'Role for all invited users (when using comma-separated emails). Can be role UUID or name.',
+		required: true,
+	},
+	{
+		displayName: 'Additional Options',
+		name: 'additionalOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: {
+			show: {
+				operation: [
+					'inviteMultiple',
+				],
+				resource: [
+					'users',
+				],
+			},
+		},
+		options: [
+			{
+				displayName: 'Email Subject',
+				name: 'emailSubject',
+				type: 'string',
+				placeholder: 'You have been invited to join',
+				default: '',
+				description: 'Custom email subject for the invitations',
+			},
+			{
+				displayName: 'Email Message',
+				name: 'emailMessage',
+				type: 'string',
+				typeOptions: {
+					rows: 4,
+				},
+				placeholder: 'Hi {{first_name}}, you have been invited to join our project.',
+				default: '',
+				description: 'Custom email body/message. Supports variable substitution: {{first_name}}, {{last_name}}, {{email}}, {{role}}',
+			},
+			{
+				displayName: 'Invite URL',
+				name: 'inviteUrl',
+				type: 'string',
+				placeholder: '',
+				default: '',
+				description: 'Custom invite URL for all invitations',
+			},
+		],
 	},
 ];
 
